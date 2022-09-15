@@ -1,27 +1,31 @@
 import Client from "../core/Client";
+import { iconEdit, iconTrash } from "./Icons"
 
 
 interface tabelaProps{
     clientes : Client[]
-
+    clienteSelecionado?:(cliente: Client) => void
+    clienteExcluido?:(cliente: Client) => void
 }
 
 
 export default function Tabela (props: tabelaProps){
+
+    const exibirIcons = props.clienteExcluido  || props.clienteSelecionado 
+    
     function rederizarTitulos(){
         return (
             
         <tr>
             <th className="text-left p-4" > Nome  </th>
-            <th className="text-left p-4"> Idade  </th>
-            <th className="text-left p-4"> Email  </th>
+            <th className="text-left p-4"> Idade </th>
+            <th className="text-left p-4"> Email </th>
             <th className="text-left p-4"> Telefone  </th>
-            <th className="p-4">Ações</th>
-            
+            {exibirIcons ? <th className="p-4">Ações</th> : false
+            }
         </tr>
-        )
+    )}
 
-    }
     function rederizarDados(){
        return props.clientes?.map((cliente, i) =>{
         return (
@@ -31,10 +35,30 @@ export default function Tabela (props: tabelaProps){
                 <td className="text-left p-4">{cliente.idade}</td>
                 <td className="text-left p-4">{cliente.email}</td>
                 <td className="text-left p-4">{cliente.telefone}</td>
-                <td className="p-4"></td>
+                { exibirIcons ? rederizarIcons(cliente): false}
             </tr>
             )
         })
+    }
+
+    function rederizarIcons(cliente: Client){
+        return (
+            <td className="flex justify-center">
+                {props.clienteSelecionado ? (
+                    <button onClick={()=> props.clienteSelecionado?.(cliente)} className={`
+                     flex justify-center items-center 
+                     text-green-900 rounded-full m-1 p-2
+                     hover:bg-purple-300`}>{iconEdit}</button>
+                    ):false} 
+                    {props.clienteExcluido ? (
+                        <button onClick={()=> props.clienteExcluido?.(cliente)} className={`
+                        flex justify-center items-center 
+                        text-red-700 rounded-full m-1 p-2
+                        hover:bg-purple-300`}>{iconTrash}</button>
+                    ):false
+                }
+            </td>
+        )
     }
 
     return (
